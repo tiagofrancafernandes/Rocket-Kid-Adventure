@@ -206,8 +206,8 @@ const Game: React.FC<GameProps> = ({ settings, onGameOver, onExit }) => {
         s.lastScoreTime = now;
       }
 
-      // Shooting
-      if (settings.shooting && keys.has('Space') && s.frame % 15 === 0) {
+      // Shooting - Frequency increased (every 6 frames instead of 15)
+      if (settings.shooting && (keys.has('Space') || keys.has('KeyS')) && s.frame % 6 === 0) {
         s.bullets.push({ id: Math.random().toString(36), x: s.rocketX, y: s.rocketY - 20 });
         if (settings.soundEffects.jet) audioService.playShoot();
       }
@@ -237,6 +237,7 @@ const Game: React.FC<GameProps> = ({ settings, onGameOver, onExit }) => {
           s.score += o.weight;
           s.bullets = s.bullets.filter(b => b.id !== bulletHit.id);
           createExplosion(o.x, o.y, '#AAAAAA');
+          if (settings.soundEffects.jet) audioService.playSmallExplosion();
           return false;
         }
 
@@ -246,12 +247,15 @@ const Game: React.FC<GameProps> = ({ settings, onGameOver, onExit }) => {
           if (dist < o.size + 20) {
             s.health -= (o.weight * 0.2);
             createExplosion(o.x, o.y, '#FF0000');
+            
             if (s.health <= 0) {
               s.health = 0;
               createExplosion(s.rocketX, s.rocketY, '#FF4500');
               if (settings.soundEffects.jet) audioService.playExplosion();
               s.phase = GamePhase.GAMEOVER;
               onGameOver(s.score);
+            } else {
+              if (settings.soundEffects.jet) audioService.playCollision();
             }
             return false;
           }

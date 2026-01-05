@@ -22,8 +22,21 @@ export class AudioService {
   }
 
   playExplosion() {
+    // Explosão grande do foguete (Game Over)
     this.noise(0.8, 'lowpass', 100);
     this.beep(100, 0.5, 'triangle');
+  }
+
+  playSmallExplosion() {
+    // Som de destruir obstáculo com tiro
+    this.noise(0.2, 'highpass', 800);
+    this.beep(300, 0.1, 'sine');
+  }
+
+  playCollision() {
+    // Som de impacto (foguete batendo em obstáculo)
+    this.noise(0.15, 'lowpass', 150);
+    this.beep(80, 0.15, 'sawtooth');
   }
 
   playShoot() {
